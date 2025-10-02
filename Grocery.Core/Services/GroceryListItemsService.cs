@@ -48,13 +48,12 @@ namespace Grocery.Core.Services
         {
             return _groceriesRepository.Update(item);
         }
-
+        //added this one
         public List<BestSellingProducts> GetBestSellingProducts(int topX = 5)
         {
-            
             var allItems = _groceriesRepository.GetAll();
 
-            var bestSelling = allItems
+            var grouped = allItems
                 .GroupBy(item => item.ProductId)
                 .Select(group => new
                 {
@@ -66,16 +65,22 @@ namespace Grocery.Core.Services
                 .ToList();
 
             var result = new List<BestSellingProducts>();
+            int ranking = 1;
 
-            foreach (var item in bestSelling)
+            foreach (var item in grouped)
             {
                 var product = _productRepository.Get(item.ProductId);
-                result.Add(new BestSellingProducts
-                {
-                    ProductId = item.ProductId,
-                    ProductName = product?.Name ?? "Unknown",
-                    TimesPurchased = item.Count
-                });
+
+                if (product == null)
+                    continue; // Skip if product not found
+
+                result.Add(new BestSellingProducts(
+                    productId: product.Id,
+                    name: product.Name,
+                    stock: product.Stock,
+                    nrOfSells: item.Count,
+                    ranking: ranking++
+                ));
             }
 
             return result;

@@ -8,4 +8,6 @@ namespace Grocery.Core.Models
         [ObservableProperty]
         public string name = name;
     }
+    
+    }
 }
