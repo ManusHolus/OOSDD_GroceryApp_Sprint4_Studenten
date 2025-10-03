@@ -33,11 +33,10 @@ namespace Grocery.Core.Services
                 .Where(item => item.ProductId == productId)
                 .ToList();
 
-            
             var product = _productRepository.Get(productId.Value);
-
             var result = new List<BoughtProducts>();
 
+            //loop to go through the grocery list items
             foreach (var item in itemsWithProduct)
             {
                 var groceryList = _groceryListRepository.Get(item.GroceryListId);
