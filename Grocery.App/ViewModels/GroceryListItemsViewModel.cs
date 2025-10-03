@@ -97,14 +97,24 @@ namespace Grocery.App.ViewModels
         [RelayCommand]
         public void IncreaseAmount(int productId)
         {
-            GroceryListItem? item = MyGroceryListItems.FirstOrDefault(x => x.ProductId == productId);
-            if (item == null) return;
-            if (item.Amount >= item.Product.Stock) return;
-            item.Amount++;
-            _groceryListItemsService.Update(item);
-            item.Product.Stock--;
-            _productService.Update(item.Product);
-            OnGroceryListChanged(GroceryList);
+            try
+            {
+                GroceryListItem? item = MyGroceryListItems.FirstOrDefault(x => x.ProductId == productId);
+                if (item == null) return;
+                if (item.Amount >= item.Product.Stock) return;
+
+                item.Amount++;
+                _groceryListItemsService.Update(item);
+                item.Product.Stock--;
+                _productService.Update(item.Product);
+                OnGroceryListChanged(GroceryList);
+            }
+            catch (Exception ex)
+            {
+                // added a try-catch methode for debugging
+                Console.WriteLine($"Error in IncreaseAmount: {ex.Message}");
+                
+            }
         }
 
         [RelayCommand]
